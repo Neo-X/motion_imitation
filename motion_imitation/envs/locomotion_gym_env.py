@@ -284,10 +284,10 @@ class LocomotionGymEnv(gym.Env):
         self._pybullet_client.COV_ENABLE_SINGLE_STEP_RENDERING,1)
       alpha = self._pybullet_client.readUserDebugParameter(self._show_reference_id)
       
-      ref_col = [1, 1, 1, alpha]
-      self._pybullet_client.changeVisualShape(self._task._ref_model, -1, rgbaColor=ref_col)
-      for l in range (self._pybullet_client.getNumJoints(self._task._ref_model)):
-      	self._pybullet_client.changeVisualShape(self._task._ref_model, l, rgbaColor=ref_col)
+#       ref_col = [1, 1, 1, alpha]
+#       self._pybullet_client.changeVisualShape(self._task._ref_model, -1, rgbaColor=ref_col)
+#       for l in range (self._pybullet_client.getNumJoints(self._task._ref_model)):
+#       	self._pybullet_client.changeVisualShape(self._task._ref_model, l, rgbaColor=ref_col)
     
       delay = self._pybullet_client.readUserDebugParameter(self._delay_id)
       if (delay>0):
@@ -344,7 +344,7 @@ class LocomotionGymEnv(gym.Env):
   def getVisualState(self, mode='rgb_array'):
     if mode != 'rgb_array':
       raise ValueError('Unsupported render mode:{}'.format(mode))
-    base_pos = np.array(self._robot.GetBasePosition())
+    base_pos = np.array(self._task._get_sim_base_position())
 #     base_pos[2] = 0.5 ## Fix the base camera height
 #     base_pos[1] = 0 ## Fix the base camera height
 #     base_pos[0] = 1.5 ## Fix the base camera height
@@ -360,21 +360,35 @@ class LocomotionGymEnv(gym.Env):
         aspect=float(self._render_width) / self._render_height,
         nearVal=0.1,
         farVal=100.0)
+    
+    ref_col = [1, 1, 1, 0.0]
+    self._pybullet_client.changeVisualShape(self._task._ref_model, -1, rgbaColor=ref_col)
+    for l in range (self._pybullet_client.getNumJoints(self._task._ref_model)):
+          self._pybullet_client.changeVisualShape(self._task._ref_model, l, rgbaColor=ref_col)
+    self._pybullet_client.changeVisualShape(self.get_ground(), -1, rgbaColor=ref_col)
+    
     (_, _, px, _, _) = self._pybullet_client.getCameraImage(
         width=self._render_width,
         height=self._render_height,
         renderer=self._pybullet_client.ER_BULLET_HARDWARE_OPENGL,
         viewMatrix=view_matrix,
         projectionMatrix=proj_matrix)
+    ref_col = [1, 1, 1, 1]
+    
+    self._pybullet_client.changeVisualShape(self._task._ref_model, -1, rgbaColor=ref_col)
+    for l in range (self._pybullet_client.getNumJoints(self._task._ref_model)):
+        self._pybullet_client.changeVisualShape(self._task._ref_model, l, rgbaColor=ref_col)
+    self._pybullet_client.changeVisualShape(self.get_ground(), -1, rgbaColor=ref_col)
+    
     rgb_array = np.array(px)
     rgb_array = rgb_array[:, :, :3]
-    rgb_array = np.mean(rgb_array, axis=2) ## to grayscale
+#     rgb_array = np.mean(rgb_array, axis=2) ## to grayscale
     return [rgb_array]
 
   def getImitationVisualState(self, mode='rgb_array'):
     if mode != 'rgb_array':
       raise ValueError('Unsupported render mode:{}'.format(mode))
-    base_pos = np.array(self._task._ref_model.GetBasePosition())
+    base_pos = np.array(self._task._get_ref_base_position())
 #     base_pos[2] = 0.5 ## Fix the base camera height
 #     base_pos[1] = 0 ## Fix the base camera height
 #     base_pos[0] = 1.5 ## Fix the base camera height
@@ -390,15 +404,29 @@ class LocomotionGymEnv(gym.Env):
         aspect=float(self._render_width) / self._render_height,
         nearVal=0.1,
         farVal=100.0)
+    ### Hide other robot
+    ref_col = [1, 1, 1, 0.0]
+    self._pybullet_client.changeVisualShape(self._task._env.robot.quadruped, -1, rgbaColor=ref_col)
+    for l in range (self._pybullet_client.getNumJoints(self._task._env.robot.quadruped)):
+          self._pybullet_client.changeVisualShape(self._task._env.robot.quadruped, l, rgbaColor=ref_col)
+    self._pybullet_client.changeVisualShape(self.get_ground(), -1, rgbaColor=ref_col)
+    
     (_, _, px, _, _) = self._pybullet_client.getCameraImage(
         width=self._render_width,
         height=self._render_height,
         renderer=self._pybullet_client.ER_BULLET_HARDWARE_OPENGL,
         viewMatrix=view_matrix,
         projectionMatrix=proj_matrix)
+    ### Unhide other robot
+    ref_col = [1, 1, 1, 1.0]
+    self._pybullet_client.changeVisualShape(self._task._env.robot.quadruped, -1, rgbaColor=ref_col)
+    for l in range (self._pybullet_client.getNumJoints(self._task._env.robot.quadruped)):
+          self._pybullet_client.changeVisualShape(self._task._env.robot.quadruped, l, rgbaColor=ref_col)
+    self._pybullet_client.changeVisualShape(self.get_ground(), -1, rgbaColor=ref_col)
+    
     rgb_array = np.array(px)
     rgb_array = rgb_array[:, :, :3]
-    rgb_array = np.mean(rgb_array, axis=2) ## to grayscale
+#     rgb_array = np.mean(rgb_array, axis=2) ## to grayscale
     return [rgb_array]
 
   def get_ground(self):
