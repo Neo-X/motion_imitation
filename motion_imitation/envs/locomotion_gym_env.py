@@ -315,7 +315,10 @@ class LocomotionGymEnv(gym.Env):
   def render(self, mode='rgb_array'):
     if mode != 'rgb_array':
       raise ValueError('Unsupported render mode:{}'.format(mode))
-    base_pos = self._robot.GetBasePosition()
+    base_pos = np.array(self._robot.GetBasePosition())
+#     base_pos[2] = 0.5 ## Fix the base camera height
+#     base_pos[1] = 0 ## Fix the base camera height
+#     base_pos[0] = 1.5 ## Fix the base camera height
     view_matrix = self._pybullet_client.computeViewMatrixFromYawPitchRoll(
         cameraTargetPosition=base_pos,
         distance=self._camera_dist,
@@ -337,6 +340,66 @@ class LocomotionGymEnv(gym.Env):
     rgb_array = np.array(px)
     rgb_array = rgb_array[:, :, :3]
     return rgb_array
+
+  def getVisualState(self, mode='rgb_array'):
+    if mode != 'rgb_array':
+      raise ValueError('Unsupported render mode:{}'.format(mode))
+    base_pos = np.array(self._robot.GetBasePosition())
+#     base_pos[2] = 0.5 ## Fix the base camera height
+#     base_pos[1] = 0 ## Fix the base camera height
+#     base_pos[0] = 1.5 ## Fix the base camera height
+    view_matrix = self._pybullet_client.computeViewMatrixFromYawPitchRoll(
+        cameraTargetPosition=base_pos,
+        distance=self._camera_dist,
+        yaw=self._camera_yaw,
+        pitch=self._camera_pitch,
+        roll=0,
+        upAxisIndex=2)
+    proj_matrix = self._pybullet_client.computeProjectionMatrixFOV(
+        fov=60,
+        aspect=float(self._render_width) / self._render_height,
+        nearVal=0.1,
+        farVal=100.0)
+    (_, _, px, _, _) = self._pybullet_client.getCameraImage(
+        width=self._render_width,
+        height=self._render_height,
+        renderer=self._pybullet_client.ER_BULLET_HARDWARE_OPENGL,
+        viewMatrix=view_matrix,
+        projectionMatrix=proj_matrix)
+    rgb_array = np.array(px)
+    rgb_array = rgb_array[:, :, :3]
+    rgb_array = np.mean(rgb_array, axis=2) ## to grayscale
+    return [rgb_array]
+
+  def getImitationVisualState(self, mode='rgb_array'):
+    if mode != 'rgb_array':
+      raise ValueError('Unsupported render mode:{}'.format(mode))
+    base_pos = np.array(self._task._ref_model.GetBasePosition())
+#     base_pos[2] = 0.5 ## Fix the base camera height
+#     base_pos[1] = 0 ## Fix the base camera height
+#     base_pos[0] = 1.5 ## Fix the base camera height
+    view_matrix = self._pybullet_client.computeViewMatrixFromYawPitchRoll(
+        cameraTargetPosition=base_pos,
+        distance=self._camera_dist,
+        yaw=self._camera_yaw,
+        pitch=self._camera_pitch,
+        roll=0,
+        upAxisIndex=2)
+    proj_matrix = self._pybullet_client.computeProjectionMatrixFOV(
+        fov=60,
+        aspect=float(self._render_width) / self._render_height,
+        nearVal=0.1,
+        farVal=100.0)
+    (_, _, px, _, _) = self._pybullet_client.getCameraImage(
+        width=self._render_width,
+        height=self._render_height,
+        renderer=self._pybullet_client.ER_BULLET_HARDWARE_OPENGL,
+        viewMatrix=view_matrix,
+        projectionMatrix=proj_matrix)
+    rgb_array = np.array(px)
+    rgb_array = rgb_array[:, :, :3]
+    rgb_array = np.mean(rgb_array, axis=2) ## to grayscale
+    return [rgb_array]
 
   def get_ground(self):
     """Get simulation ground model."""

@@ -58,7 +58,7 @@ class ImitationTask(object):
                root_velocity_err_scale=2,
                perturb_init_state_prob=0.0,
                tar_obs_noise=None,
-               draw_ref_model_alpha=0.5):
+               draw_ref_model_alpha=1.0):
     """Initializes the task.
 
     Args:
@@ -297,7 +297,10 @@ class ImitationTask(object):
 
       tar_poses.append(tar_pose)
 
-    tar_obs = np.concatenate(tar_poses, axis=-1)
+    if (len(self._tar_frame_steps) > 0 ):
+        tar_obs = np.concatenate(tar_poses, axis=-1)
+    else:
+        tar_obs = []
 
     return tar_obs
 
@@ -330,8 +333,12 @@ class ImitationTask(object):
     motion.set_frame_root_rot(rot_bound, high)
 
     num_tar_frames = self.get_num_tar_frames()
-    low = np.concatenate([low] * num_tar_frames, axis=-1)
-    high = np.concatenate([high] * num_tar_frames, axis=-1)
+    if num_tar_frames > 0 :
+        low = np.concatenate([low] * num_tar_frames, axis=-1)
+        high = np.concatenate([high] * num_tar_frames, axis=-1)
+    else:
+        low = []
+        high = []
 
     return low, high
 
