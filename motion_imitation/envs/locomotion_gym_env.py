@@ -382,7 +382,8 @@ class LocomotionGymEnv(gym.Env):
     
     rgb_array = np.array(px)
     rgb_array = rgb_array[:, :, :3]
-#     rgb_array = np.mean(rgb_array, axis=2) ## to grayscale
+    rgb_array = np.mean(rgb_array, axis=2) ## to grayscale
+    rgb_array = np.concatenate((rgb_array.flatten(), self._pybullet_client.getBaseVelocity(self._task._env.robot.quadruped)[0]), axis=-1) ## to grayscale
     return [rgb_array]
 
   def getImitationVisualState(self, mode='rgb_array'):
@@ -426,7 +427,8 @@ class LocomotionGymEnv(gym.Env):
     
     rgb_array = np.array(px)
     rgb_array = rgb_array[:, :, :3]
-#     rgb_array = np.mean(rgb_array, axis=2) ## to grayscale
+    rgb_array = np.mean(rgb_array, axis=2) ## to grayscale
+    rgb_array = np.concatenate((rgb_array.flatten(), self._pybullet_client.getBaseVelocity(self._task._ref_model)[0]), axis=-1) ## to grayscale
     return [rgb_array]
 
   def get_ground(self):

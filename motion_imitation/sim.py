@@ -160,37 +160,37 @@ def main():
 #         env.render()
         print(observation.shape)
         # action = ((actionSpace.getMaximum() - actionSpace.getMinimum()) * np.random.uniform(size=actionSpace.getMinimum().shape[0])  ) + actionSpace.getMinimum()
-#         vizData = env.getVisualState()
-#         vizImitateData = env.getImitationVisualState()
-#         for vd in range(len(vizData)):
-#             # print("viewData: ", viewData)
-#             viewData = vizData[vd]
-#             viewImitateData = vizImitateData[vd]
-#             ## Get and vis terrain data
-#             if (True):
-#                 import matplotlib
-#                 matplotlib.use('Agg')
-#                 import matplotlib.pyplot as plt
-#                 # img_ = viewData
-# #                 viewData = viewData - viewImitateData
-#                 img_ = np.reshape(viewData, (48,48,3))
-# #                     noise = np.random.normal(loc=0, scale=0.02, size=img_.shape)
-# #                     img_ = img_ + noise
-#                 print("img_ shape", img_.shape, " sum: ", np.sum(viewData))
-#                 fig1 = plt.figure(1)
-#                 plt.imshow(img_, origin='lower')
-#                 plt.title("visual Data: " +  str(vd))
-#                 fig1.savefig("char_viz_state_"+str(i_episode)+"_"+str(t)+".svg")
-# 
-#                 if (True):                    
-#                     img__ = viewImitateData
-#                     img__ = np.reshape(viewImitateData, (48, 48,3))
-#                     fig2 = plt.figure(2)
-#                     img__ = np.concatenate((img_, img__), axis=1)
-#                     plt.imshow(img__, origin='lower')
-#                     plt.title("visual Data: " +  str(vd))
-#                     fig2.savefig("char_viz_imitation_state_"+str(i_episode)+"_"+str(t)+".svg")
-#                 plt.show()
+        vizData = env.getVisualState()
+        vizImitateData = env.getImitationVisualState()
+        for vd in range(len(vizData)):
+            # print("viewData: ", viewData)
+            viewData = vizData[vd]
+            viewImitateData = vizImitateData[vd]
+            ## Get and vis terrain data
+            if (True):
+                import matplotlib
+                matplotlib.use('Agg')
+                import matplotlib.pyplot as plt
+                # img_ = viewData
+#                 viewData = viewData - viewImitateData
+                img_ = np.reshape(viewData[:2304], (48,48))
+#                     noise = np.random.normal(loc=0, scale=0.02, size=img_.shape)
+#                     img_ = img_ + noise
+                print("img_ shape", img_.shape, " sum: ", np.sum(viewData))
+                fig1 = plt.figure(1)
+                plt.imshow(img_, origin='lower')
+                plt.title("visual Data: " +  str(vd))
+                fig1.savefig("char_viz_state_"+str(i_episode)+"_"+str(t)+".svg")
+ 
+                if (True):                    
+                    img__ = viewImitateData
+                    img__ = np.reshape(viewImitateData[:2304], (48, 48))
+                    fig2 = plt.figure(2)
+                    img__ = np.concatenate((img_, img__), axis=1)
+                    plt.imshow(img__, origin='lower')
+                    plt.title("visual Data: " +  str(vd))
+                    fig2.savefig("char_viz_imitation_state_"+str(i_episode)+"_"+str(t)+".svg")
+                plt.show()
         action = env.action_space.sample()
         # print("Actions: ", actions)
         observation, reward, done, info = env.step(action)
