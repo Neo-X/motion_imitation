@@ -55,9 +55,9 @@ def build_imitation_env(motion_files, num_parallel_envs, mode,
                                       warmup_time=0.0)
 
   randomizers = []
-  if enable_randomizer:
-    randomizer = controllable_env_randomizer_from_config.ControllableEnvRandomizerFromConfig(verbose=False)
-    randomizers.append(randomizer)
+#   if enable_randomizer:
+#     randomizer = controllable_env_randomizer_from_config.ControllableEnvRandomizerFromConfig(verbose=False)
+#     randomizers.append(randomizer)
 
   env = locomotion_gym_env.LocomotionGymEnv(gym_config=gym_config, robot_class=robot_class,
                                             env_randomizers=randomizers, robot_sensors=sensors, task=task)

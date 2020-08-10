@@ -26,6 +26,7 @@ import pybullet_data as pd
 
 from envs.sensors import sensor
 from envs.sensors import space_utils
+import cv2
 
 
 _ACTION_EPS = 0.01
@@ -382,6 +383,7 @@ class LocomotionGymEnv(gym.Env):
     
     rgb_array = np.array(px)
     rgb_array = rgb_array[:, :, :3]
+    rgb_array = cv2.resize(rgb_array, dsize=(48,48), interpolation=cv2.INTER_AREA)
     rgb_array = np.mean(rgb_array, axis=2) ## to grayscale
     rgb_array = np.concatenate((rgb_array.flatten(), self._pybullet_client.getBaseVelocity(self._task._env.robot.quadruped)[0]), axis=-1) ## to grayscale
     return [rgb_array]
@@ -427,6 +429,7 @@ class LocomotionGymEnv(gym.Env):
     
     rgb_array = np.array(px)
     rgb_array = rgb_array[:, :, :3]
+    rgb_array = cv2.resize(rgb_array, dsize=(48,48), interpolation=cv2.INTER_AREA)
     rgb_array = np.mean(rgb_array, axis=2) ## to grayscale
     rgb_array = np.concatenate((rgb_array.flatten(), self._pybullet_client.getBaseVelocity(self._task._ref_model)[0]), axis=-1) ## to grayscale
     return [rgb_array]
