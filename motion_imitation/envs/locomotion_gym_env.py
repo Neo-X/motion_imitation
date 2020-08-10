@@ -238,6 +238,8 @@ class LocomotionGymEnv(gym.Env):
     # Loop over all env randomizers.
     for env_randomizer in self._env_randomizers:
       env_randomizer.randomize_env(self)
+      
+    self._cam_dist_mod = (np.random.rand() - 0.5) * 0.3
 
     return self._get_observation()
 
@@ -351,7 +353,7 @@ class LocomotionGymEnv(gym.Env):
 #     base_pos[0] = 1.5 ## Fix the base camera height
     view_matrix = self._pybullet_client.computeViewMatrixFromYawPitchRoll(
         cameraTargetPosition=base_pos,
-        distance=self._camera_dist,
+        distance=self._camera_dist + self._cam_dist_mod,
         yaw=self._camera_yaw,
         pitch=self._camera_pitch,
         roll=0,
@@ -397,7 +399,7 @@ class LocomotionGymEnv(gym.Env):
 #     base_pos[0] = 1.5 ## Fix the base camera height
     view_matrix = self._pybullet_client.computeViewMatrixFromYawPitchRoll(
         cameraTargetPosition=base_pos,
-        distance=self._camera_dist,
+        distance=self._camera_dist + self._cam_dist_mod,
         yaw=self._camera_yaw,
         pitch=self._camera_pitch,
         roll=0,

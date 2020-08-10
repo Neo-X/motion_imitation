@@ -152,7 +152,7 @@ def main():
   
   rewards = []
   states = []
-  time_limit=128
+  time_limit=2
   print ("env.action_space.high: ", env.action_space.high)
   for i_episode in range(50):
       observation = env.reset()
