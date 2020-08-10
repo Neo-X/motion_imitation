@@ -20,6 +20,7 @@ from envs.env_wrappers import observation_dictionary_to_array_wrapper
 from envs.env_wrappers import trajectory_generator_wrapper_env
 from envs.env_wrappers import simple_openloop
 from envs.env_wrappers import imitation_task
+from envs.env_wrappers import dual_state_wrapper
 from envs.sensors import environment_sensors
 from envs.sensors import sensor_wrappers
 from envs.sensors import robot_sensors
@@ -28,7 +29,7 @@ from robots import laikago
 
 
 def build_imitation_env(motion_files, num_parallel_envs, mode,
-                        enable_randomizer, enable_rendering):
+                        enable_randomizer, enable_rendering, dual_state=False):
   assert len(motion_files) > 0
 
   curriculum_episode_length_start = 20
@@ -62,6 +63,8 @@ def build_imitation_env(motion_files, num_parallel_envs, mode,
                                             env_randomizers=randomizers, robot_sensors=sensors, task=task)
 
   env = observation_dictionary_to_array_wrapper.ObservationDictionaryToArrayWrapper(env)
+  if dual_state:
+      env = dual_state_wrapper.DualStateWrapper(env)
   env = trajectory_generator_wrapper_env.TrajectoryGeneratorWrapperEnv(env,
                                                                        trajectory_generator=simple_openloop.LaikagoPoseOffsetGenerator(action_limit=laikago.UPPER_BOUND))
 
