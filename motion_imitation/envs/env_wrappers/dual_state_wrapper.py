@@ -39,7 +39,7 @@ class DualStateWrapper(gym.Env):
 
   def _get_obs(self, obs):
       import numpy as np
-      print ("sim obs: ", len(obs))
+#       print ("sim obs: ", len(obs))
 #       print ("sim self.getVisualState()[0]: ", self.getVisualState()[0].shape)
       obs = [obs, self.getVisualState()[0]]
 #       print ("sim obs: ", np.array(obs).shape)
