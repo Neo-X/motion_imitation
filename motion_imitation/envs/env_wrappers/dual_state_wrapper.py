@@ -38,8 +38,12 @@ class DualStateWrapper(gym.Env):
 
 
   def _get_obs(self, obs):
-      
-      return [obs, self.getVisualState()[0]]
+      import numpy as np
+      print ("sim obs: ", len(obs))
+#       print ("sim self.getVisualState()[0]: ", self.getVisualState()[0].shape)
+      obs = [obs, self.getVisualState()[0]]
+#       print ("sim obs: ", np.array(obs).shape)
+      return obs
       
       
   def reset(self, initial_motor_angles=None, reset_duration=0.0):

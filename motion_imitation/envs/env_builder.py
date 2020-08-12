@@ -63,8 +63,6 @@ def build_imitation_env(motion_files, num_parallel_envs, mode,
                                             env_randomizers=randomizers, robot_sensors=sensors, task=task)
 
   env = observation_dictionary_to_array_wrapper.ObservationDictionaryToArrayWrapper(env)
-  if dual_state:
-      env = dual_state_wrapper.DualStateWrapper(env)
   env = trajectory_generator_wrapper_env.TrajectoryGeneratorWrapperEnv(env,
                                                                        trajectory_generator=simple_openloop.LaikagoPoseOffsetGenerator(action_limit=laikago.UPPER_BOUND))
 
@@ -76,4 +74,7 @@ def build_imitation_env(motion_files, num_parallel_envs, mode,
                                                   episode_length_end=curriculum_episode_length_end,
                                                   curriculum_steps=30000000,
                                                   num_parallel_envs=num_parallel_envs)
+  if dual_state:
+    env = dual_state_wrapper.DualStateWrapper(env)
+#       sys.exit()
   return env
