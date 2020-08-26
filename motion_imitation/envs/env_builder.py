@@ -50,7 +50,8 @@ def build_imitation_env(motion_files, num_parallel_envs, mode,
 
   task = imitation_task.ImitationTask(ref_motion_filenames=motion_files,
                                       enable_cycle_sync=True,
-                                      tar_frame_steps=[1, 2, 15, 30],
+                                      enable_rand_init_time=True,
+                                      tar_frame_steps=[1,],
                                       ref_state_init_prob=0.9,
                                       warmup_time=0.0)
 
