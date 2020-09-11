@@ -43,10 +43,16 @@ def build_imitation_env(motion_files, num_parallel_envs, mode,
   robot_class = laikago.Laikago
 
   sensors = [
-      sensor_wrappers.HistoricSensorWrapper(wrapped_sensor=robot_sensors.MotorAngleSensor(num_motors=laikago.NUM_MOTORS, noisy_reading=False), num_history=3),
-      sensor_wrappers.HistoricSensorWrapper(wrapped_sensor=robot_sensors.IMUSensor(noisy_reading=False), num_history=3),
-      sensor_wrappers.HistoricSensorWrapper(wrapped_sensor=environment_sensors.LastActionSensor(num_actions=laikago.NUM_MOTORS), num_history=3)
-  ]
+        sensor_wrappers.HistoricSensorWrapper(wrapped_sensor=robot_sensors.MotorAngleSensor(num_motors=laikago.NUM_MOTORS, noisy_reading=False), num_history=1),
+        sensor_wrappers.HistoricSensorWrapper(wrapped_sensor=robot_sensors.IMUSensor(noisy_reading=False), num_history=1),
+        sensor_wrappers.HistoricSensorWrapper(wrapped_sensor=environment_sensors.LastActionSensor(num_actions=laikago.NUM_MOTORS), num_history=1)
+    ]
+#   sensors = [
+#       sensor_wrappers.SensorWrapper(wrapped_sensor=robot_sensors.MotorAngleSensor(num_motors=laikago.NUM_MOTORS, noisy_reading=False)),
+#       sensor_wrappers.SensorWrapper(wrapped_sensor=robot_sensors.IMUSensor(noisy_reading=False)),
+#       sensor_wrappers.SensorWrapper(wrapped_sensor=environment_sensors.LastActionSensor(num_actions=laikago.NUM_MOTORS))
+#   ]
+  
 
   task = imitation_task.ImitationTask(ref_motion_filenames=motion_files,
                                       enable_cycle_sync=True,
