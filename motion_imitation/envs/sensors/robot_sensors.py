@@ -82,6 +82,100 @@ class MotorAngleSensor(sensor.BoxSpaceSensor):
       return np.hstack((np.cos(motor_angles), np.sin(motor_angles)))
     else:
       return motor_angles
+  
+class MotorVelocitySensor(sensor.BoxSpaceSensor):
+  """A sensor that reads motor angles from the robot."""
+
+  def __init__(self,
+               num_motors: int,
+               noisy_reading: bool = True,
+               observe_sine_cosine: bool = False,
+               lower_bound: _FLOAT_OR_ARRAY = -np.pi*2,
+               upper_bound: _FLOAT_OR_ARRAY = np.pi*2,
+               name: typing.Text = "MotorVelocity",
+               dtype: typing.Type[typing.Any] = np.float64) -> None:
+    """Constructs MotorVelocitySensor.
+
+    Args:
+      num_motors: the number of motors in the robot
+      noisy_reading: whether values are true observations
+      observe_sine_cosine: whether to convert readings to sine/cosine values for
+        continuity
+      lower_bound: the lower bound of the motor angle
+      upper_bound: the upper bound of the motor angle
+      name: the name of the sensor
+      dtype: data type of sensor value
+    """
+    self._num_motors = num_motors
+    self._noisy_reading = noisy_reading
+    self._observe_sine_cosine = observe_sine_cosine
+
+    if observe_sine_cosine:
+      super(MotorVelocitySensor, self).__init__(
+          name=name,
+          shape=(self._num_motors * 2,),
+          lower_bound=-np.ones(self._num_motors * 2),
+          upper_bound=np.ones(self._num_motors * 2),
+          dtype=dtype)
+    else:
+      super(MotorVelocitySensor, self).__init__(
+          name=name,
+          shape=(self._num_motors,),
+          lower_bound=lower_bound,
+          upper_bound=upper_bound,
+          dtype=dtype)
+
+  def _get_observation(self) -> _ARRAY:
+      motor_vels = self._robot.GetTrueMotorVelocities()
+
+      return motor_vels
+  
+class MotorTorqueSensor(sensor.BoxSpaceSensor):
+  """A sensor that reads motor angles from the robot."""
+
+  def __init__(self,
+               num_motors: int,
+               noisy_reading: bool = True,
+               observe_sine_cosine: bool = False,
+               lower_bound: _FLOAT_OR_ARRAY = -np.pi*2,
+               upper_bound: _FLOAT_OR_ARRAY = np.pi*2,
+               name: typing.Text = "MotorVelocity",
+               dtype: typing.Type[typing.Any] = np.float64) -> None:
+    """Constructs MotorVelocitySensor.
+
+    Args:
+      num_motors: the number of motors in the robot
+      noisy_reading: whether values are true observations
+      observe_sine_cosine: whether to convert readings to sine/cosine values for
+        continuity
+      lower_bound: the lower bound of the motor angle
+      upper_bound: the upper bound of the motor angle
+      name: the name of the sensor
+      dtype: data type of sensor value
+    """
+    self._num_motors = num_motors
+    self._noisy_reading = noisy_reading
+    self._observe_sine_cosine = observe_sine_cosine
+
+    if observe_sine_cosine:
+      super(MotorTorqueSensor, self).__init__(
+          name=name,
+          shape=(self._num_motors * 2,),
+          lower_bound=-np.ones(self._num_motors * 2),
+          upper_bound=np.ones(self._num_motors * 2),
+          dtype=dtype)
+    else:
+      super(MotorTorqueSensor, self).__init__(
+          name=name,
+          shape=(self._num_motors,),
+          lower_bound=lower_bound,
+          upper_bound=upper_bound,
+          dtype=dtype)
+
+  def _get_observation(self) -> _ARRAY:
+      motor_vels = self._robot.GetTrueMotorTorques()
+
+      return motor_vels
 
 class MinitaurLegPoseSensor(sensor.BoxSpaceSensor):
   """A sensor that reads leg_pose from the Minitaur robot."""
@@ -371,3 +465,29 @@ class PoseSensor(sensor.BoxSpaceSensor):
   def _get_observation(self) -> _ARRAY:
     return np.concatenate((self._robot.GetBasePosition()[:2],
                            (self._robot.GetTrueBaseRollPitchYaw()[2],)))
+    
+class BaseOrientationSensor(sensor.BoxSpaceSensor):
+  """A sensor that reads the (x, y, theta) of a robot."""
+
+  def __init__(self,
+               lower_bound: _FLOAT_OR_ARRAY = -100,
+               upper_bound: _FLOAT_OR_ARRAY = 100,
+               name: typing.Text = "BaseOrientationSensor",
+               dtype: typing.Type[typing.Any] = np.float64) -> None:
+    """Constructs PoseSensor.
+
+    Args:
+      lower_bound: the lower bound of the pose of the robot.
+      upper_bound: the upper bound of the pose of the robot.
+      name: the name of the sensor.
+      dtype: data type of sensor value.
+    """
+    super(BaseOrientationSensor, self).__init__(
+        name=name,
+        shape=(6,),  # x, y, orientation
+        lower_bound=lower_bound,
+        upper_bound=upper_bound,
+        dtype=dtype)
+
+  def _get_observation(self) -> _ARRAY:
+    return self._robot.GetTrueBaseOrientation()
