@@ -32,7 +32,7 @@ def build_imitation_env(motion_files, num_parallel_envs, mode,
                         enable_randomizer, enable_rendering, dual_state=False):
   assert len(motion_files) > 0
 
-  curriculum_episode_length_start = 20
+  curriculum_episode_length_start = 600
   curriculum_episode_length_end = 600
   
   sim_params = locomotion_gym_config.SimulationParameters()
@@ -61,8 +61,9 @@ def build_imitation_env(motion_files, num_parallel_envs, mode,
                                       enable_cycle_sync=True,
                                       enable_rand_init_time=True,
                                       tar_frame_steps=[1,],
-                                      ref_state_init_prob=0.9,
-                                      warmup_time=0.0)
+                                      ref_state_init_prob=1.0,
+                                      warmup_time=0.0,
+                                      perturb_init_state_prob=0.0)
 
   randomizers = []
 #   if enable_randomizer:

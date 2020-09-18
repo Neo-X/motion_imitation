@@ -29,7 +29,8 @@ import typing
 class SimulationParameters(object):
   """Parameters specific for the pyBullet simulation."""
   sim_time_step_s = attr.ib(type=float, default=0.001)
-  num_action_repeat = attr.ib(type=int, default=33)
+#   num_action_repeat = attr.ib(type=int, default=33)
+  num_action_repeat = attr.ib(type=int, default=1)
   enable_hard_reset = attr.ib(type=bool, default=False)
   enable_rendering = attr.ib(type=bool, default=False)
   enable_rendering_gui = attr.ib(type=bool, default=True)

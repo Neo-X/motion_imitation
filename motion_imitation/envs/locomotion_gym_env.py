@@ -296,18 +296,20 @@ class LocomotionGymEnv(gym.Env):
       if (delay>0):
         time.sleep(delay)
     for env_randomizer in self._env_randomizers:
+      print ("Using randomizers: ")
       env_randomizer.randomize_step(self)
 
     # robot class and put the logics here.
     self._robot.Step(action)
 
+    if self._task and hasattr(self._task, 'update'):
+      self._task.update(self)
+      
     reward = self._reward()
 
     for s in self.all_sensors():
       s.on_step(self)
 
-    if self._task and hasattr(self._task, 'update'):
-      self._task.update(self)
 
     done = self._termination()
     self._env_step_counter += 1

@@ -196,7 +196,7 @@ class ImitationTask(object):
       perturb_state = rand_val < self._perturb_init_state_prob
 
     self._sync_sim_model(perturb_state)
-
+    print("Reset reward: ", self.reward(env))
     return
 
   def update(self, env):
@@ -355,6 +355,12 @@ class ImitationTask(object):
     end_effector_reward = self._calc_reward_end_effector()
     root_pose_reward = self._calc_reward_root_pose()
     root_velocity_reward = self._calc_reward_root_velocity()
+    
+    print ("pose_reward: ", pose_reward)
+    print ("velocity_reward: ", velocity_reward)
+    print ("end_effector_reward: ", end_effector_reward)
+    print ("root_pose_reward: ", root_pose_reward)
+    print ("root_velocity_reward: ", root_velocity_reward)
 
     reward = self._pose_weight * pose_reward \
              + self._velocity_weight * velocity_reward \
@@ -410,6 +416,7 @@ class ImitationTask(object):
       j_state_sim = pyb.getJointStateMultiDof(sim_model, j)
       j_vel_ref = np.array(j_state_ref[1])
       j_vel_sim = np.array(j_state_sim[1])
+      print ("j_vel_ref: ", j_vel_ref, " j_vel_sim: ", j_vel_sim)
 
       j_size_ref = len(j_vel_ref)
       j_size_sim = len(j_vel_sim)
@@ -418,6 +425,7 @@ class ImitationTask(object):
         assert (j_size_sim == j_size_ref)
         j_vel_diff = j_vel_ref - j_vel_sim
         j_vel_err = j_vel_diff.dot(j_vel_diff)
+        print ("j_vel_diff: ", j_vel_diff, " j_vel_err: ", j_vel_err)
         vel_err += j_vel_err
 
     vel_reward = np.exp(-self._velocity_err_scale * vel_err)
@@ -778,6 +786,7 @@ class ImitationTask(object):
         j_pose = pose[q_idx:(q_idx + q_size)]
         j_vel = vel[dq_idx:(dq_idx + dq_size)]
         pyb.resetJointStateMultiDof(phys_model, j, j_pose, j_vel)
+        j_state_ref = pyb.getJointStateMultiDof(phys_model, j)
 
     return
 
