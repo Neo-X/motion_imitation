@@ -112,7 +112,7 @@ class Laikago(minitaur.Minitaur):
       urdf_filename=URDF_FILENAME,
       enable_clip_motor_commands=True,
       time_step=0.001,
-      action_repeat=1,
+      action_repeat=10,
       sensors=None,
       control_latency=0.000,
       on_rack=False,

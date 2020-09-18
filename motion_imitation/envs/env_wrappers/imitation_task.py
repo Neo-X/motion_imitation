@@ -50,7 +50,7 @@ class ImitationTask(object):
                end_effector_weight=0.2,
                root_pose_weight=0.15,
                root_velocity_weight=0.1,
-               pose_err_scale=5.0,
+               pose_err_scale=100.0,
                velocity_err_scale=0.1,
                end_effector_err_scale=40,
                end_effector_height_err_scale=3.0,
@@ -196,7 +196,7 @@ class ImitationTask(object):
       perturb_state = rand_val < self._perturb_init_state_prob
 
     self._sync_sim_model(perturb_state)
-    print("Reset reward: ", self.reward(env))
+#     print("Reset reward: ", self.reward(env))
     return
 
   def update(self, env):
@@ -356,11 +356,11 @@ class ImitationTask(object):
     root_pose_reward = self._calc_reward_root_pose()
     root_velocity_reward = self._calc_reward_root_velocity()
     
-    print ("pose_reward: ", pose_reward)
-    print ("velocity_reward: ", velocity_reward)
-    print ("end_effector_reward: ", end_effector_reward)
-    print ("root_pose_reward: ", root_pose_reward)
-    print ("root_velocity_reward: ", root_velocity_reward)
+#     print ("pose_reward: ", pose_reward)
+#     print ("velocity_reward: ", velocity_reward)
+#     print ("end_effector_reward: ", end_effector_reward)
+#     print ("root_pose_reward: ", root_pose_reward)
+#     print ("root_velocity_reward: ", root_velocity_reward)
 
     reward = self._pose_weight * pose_reward \
              + self._velocity_weight * velocity_reward \
@@ -392,7 +392,7 @@ class ImitationTask(object):
 
       if (j_size_ref > 0):
         assert (j_size_ref == j_size_sim)
-        j_pose_diff = j_pose_ref - j_pose_sim
+        j_pose_diff = (j_pose_ref - j_pose_sim) / num_joints
         j_pose_err = j_pose_diff.dot(j_pose_diff)
         pose_err += j_pose_err
 
@@ -416,16 +416,16 @@ class ImitationTask(object):
       j_state_sim = pyb.getJointStateMultiDof(sim_model, j)
       j_vel_ref = np.array(j_state_ref[1])
       j_vel_sim = np.array(j_state_sim[1])
-      print ("j_vel_ref: ", j_vel_ref, " j_vel_sim: ", j_vel_sim)
+#       print ("j_vel_ref: ", j_vel_ref, " j_vel_sim: ", j_vel_sim)
 
       j_size_ref = len(j_vel_ref)
       j_size_sim = len(j_vel_sim)
 
       if (j_size_ref > 0):
         assert (j_size_sim == j_size_ref)
-        j_vel_diff = j_vel_ref - j_vel_sim
+        j_vel_diff = (j_vel_ref - j_vel_sim) / num_joints
         j_vel_err = j_vel_diff.dot(j_vel_diff)
-        print ("j_vel_diff: ", j_vel_diff, " j_vel_err: ", j_vel_err)
+#         print ("j_vel_diff: ", j_vel_diff, " j_vel_err: ", j_vel_err)
         vel_err += j_vel_err
 
     vel_reward = np.exp(-self._velocity_err_scale * vel_err)
