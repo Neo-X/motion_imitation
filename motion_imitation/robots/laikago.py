@@ -117,7 +117,7 @@ class Laikago(minitaur.Minitaur):
       control_latency=0.000,
       on_rack=False,
       enable_action_interpolation=False,
-      enable_action_filter=False
+      enable_action_filter=True
   ):
     self._urdf_filename = urdf_filename
 
