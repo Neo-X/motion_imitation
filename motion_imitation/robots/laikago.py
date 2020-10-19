@@ -62,11 +62,11 @@ _DEFAULT_HIP_POSITIONS = (
     (-0.21, 0.1157, 0),
 )
 
-ABDUCTION_P_GAIN = 220.0
+ABDUCTION_P_GAIN = 180.0
 ABDUCTION_D_GAIN = 0.3
-HIP_P_GAIN = 220.0
+HIP_P_GAIN = 180.0
 HIP_D_GAIN = 2.0
-KNEE_P_GAIN = 220.0
+KNEE_P_GAIN = 180.0
 KNEE_D_GAIN = 2.0
 
 # Bases on the readings from Laikago's default pose.
@@ -111,8 +111,8 @@ class Laikago(minitaur.Minitaur):
       pybullet_client,
       urdf_filename=URDF_FILENAME,
       enable_clip_motor_commands=True,
-      time_step=0.001,
-      action_repeat=10,
+      time_step=0.0005,
+      action_repeat=20,
       sensors=None,
       control_latency=0.000,
       on_rack=False,

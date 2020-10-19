@@ -324,6 +324,12 @@ class LocomotionGymEnv(gym.Env):
 #     base_pos[2] = 0.5 ## Fix the base camera height
 #     base_pos[1] = 0 ## Fix the base camera height
 #     base_pos[0] = 1.5 ## Fix the base camera height
+#     ref_col = [1, 1, 1, 0.0]
+#     self._pybullet_client.changeVisualShape(self._task._ref_model, -1, rgbaColor=ref_col)
+#     for l in range (self._pybullet_client.getNumJoints(self._task._ref_model)):
+#           self._pybullet_client.changeVisualShape(self._task._ref_model, l, rgbaColor=ref_col)
+#     self._pybullet_client.changeVisualShape(self.get_ground(), -1, rgbaColor=ref_col)
+    
     view_matrix = self._pybullet_client.computeViewMatrixFromYawPitchRoll(
         cameraTargetPosition=base_pos,
         distance=self._camera_dist,
