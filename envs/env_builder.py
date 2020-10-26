@@ -20,7 +20,7 @@ from envs.env_wrappers import observation_dictionary_to_array_wrapper
 from envs.env_wrappers import trajectory_generator_wrapper_env
 from envs.env_wrappers import simple_openloop
 from envs.env_wrappers import imitation_task
-from envs.env_wrappers import dual_state_wrapper
+from envs.env_wrappers import dual_state_wrapper, info_dict_wrapper
 from envs.sensors import environment_sensors
 from envs.sensors import sensor_wrappers
 from envs.sensors import robot_sensors
@@ -85,7 +85,4 @@ def build_imitation_env(motion_files, num_parallel_envs, mode,
                                                   episode_length_end=curriculum_episode_length_end,
                                                   curriculum_steps=30000000,
                                                   num_parallel_envs=num_parallel_envs)
-  if dual_state:
-    env = dual_state_wrapper.DualStateWrapper(env)
-#       sys.exit()
   return env

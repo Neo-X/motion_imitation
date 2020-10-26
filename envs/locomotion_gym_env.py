@@ -296,7 +296,7 @@ class LocomotionGymEnv(gym.Env):
       if (delay>0):
         time.sleep(delay)
     for env_randomizer in self._env_randomizers:
-      print ("Using randomizers: ")
+#       print ("Using randomizers: ")
       env_randomizer.randomize_step(self)
 
     # robot class and put the logics here.
@@ -396,7 +396,7 @@ class LocomotionGymEnv(gym.Env):
     rgb_array = cv2.resize(rgb_array, dsize=(48,48), interpolation=cv2.INTER_AREA)
     rgb_array = np.mean(rgb_array, axis=2) ## to grayscale
     rgb_array = np.concatenate((rgb_array.flatten(), self._pybullet_client.getBaseVelocity(self._task._env.robot.quadruped)[0]), axis=-1) ## to grayscale
-    return [rgb_array]
+    return rgb_array
 
   def getImitationVisualState(self, mode='rgb_array'):
     if mode != 'rgb_array':
@@ -442,7 +442,7 @@ class LocomotionGymEnv(gym.Env):
     rgb_array = cv2.resize(rgb_array, dsize=(48,48), interpolation=cv2.INTER_AREA)
     rgb_array = np.mean(rgb_array, axis=2) ## to grayscale
     rgb_array = np.concatenate((rgb_array.flatten(), self._pybullet_client.getBaseVelocity(self._task._ref_model)[0]), axis=-1) ## to grayscale
-    return [rgb_array]
+    return rgb_array
 
   def get_ground(self):
     """Get simulation ground model."""
